@@ -51,7 +51,7 @@ Route::post('submit', function()
 });
 ```
 
-In your ``app.js`` file, include the helper function and bind your variables:
+In your ``resources/assets/js/app.js`` file, setup your Vue instance (with the helper ``errors`` class):
 
 ```
 require('../../../vendor/travis/vueform/public/js/vueform.js');
@@ -65,7 +65,7 @@ const app = new Vue({
     		'last': null,
     		'email': null,
     	},
-    	'errors': new errors(),
+    	'errors': new errors()
     },
     methods: {
     	onFormSubmit: function() {
@@ -75,8 +75,8 @@ const app = new Vue({
     				app.step = 3;
     			})
     			.catch(function(error) {
-    				app.errors.record(error.response.data);
     				app.step = 2;
+    				app.errors.record(error.response.data);
     			});
     	},
     	onFormClear: function() {
@@ -90,7 +90,7 @@ const app = new Vue({
 });
 ```
 
-In your HTML, setup your form:
+Setup your HTML form:
 
 ```html
 <form method="POST" action="#" v-on:submit.prevent="onFormSubmit()">
@@ -120,7 +120,7 @@ In your HTML, setup your form:
 			<button class="button is-primary is-medium" v-bind:disabled="errors.any()">Submit</button>
 		</p>
 		<p class="control">
-			<a class="button is-link is-medium" v-on:click="closeForm()">Cancel</a>
+			<a class="button is-link is-medium" v-on:click="onFormClear()">Cancel</a>
 		</p>
 	</div>
 </form>
