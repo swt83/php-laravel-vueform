@@ -104,6 +104,6 @@ abstract class VueForm
      */
 	public static function response($payload = true)
 	{
-		return response(static::$errors ? static::$errors : $payload, static::$code);
+		return response(json_encode(static::$errors ? static::$errors : $payload), static::$code);
 	}
 }
