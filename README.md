@@ -60,20 +60,32 @@ const app = new Vue({
     el: '#app',
     data: {
     	'step': 1,
+    	'input': {
+    		'first': null,
+    		'last': null,
+    		'email': null,
+    	},
     	'errors': new errors(),
     },
     methods: {
     	onFormSubmit: function() {
-    		var that = this;
+    		var app = this;
     		axios.post('submit', this.input)
     			.then(function(response) {
-    				that.step = 3;
+    				app.step = 3;
     			})
     			.catch(function(error) {
-    				that.errors.record(error.response.data);
-    				that.step = 2;
+    				app.errors.record(error.response.data);
+    				app.step = 2;
     			});
     	},
+    	onFormClear: function() {
+    		this.step = 1;
+    		this.errors.clearAll();
+    		for (field in this.input) {
+    			this.input[field] = null;
+    		}
+    	}
     }
 });
 ```
