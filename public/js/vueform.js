@@ -1,4 +1,4 @@
-class Errors {
+window.errors = class {
 
 	constructor() {
 		this.fields = {};

@@ -54,13 +54,13 @@ Route::post('submit', function()
 In your ``app.js`` file, include the helper function and bind your variables:
 
 ```
-require('./../../../vendor/travis/vueform/js/Vueform.js');
+require('../../../vendor/travis/vueform/public/js/vueform.js');
 
 const app = new Vue({
     el: '#app',
     data: {
     	'step': 1,
-    	'errors': new Errors(),
+    	'errors': new errors(),
     },
     methods: {
     	onFormSubmit: function() {
