@@ -34,10 +34,10 @@ class MyForm extends VueForm
 		}
 
 		// return
-		return response(); // if form doesn't validate, this will autoreturn 422 and errors json
+		return static::response(); // if form doesn't validate, this will autoreturn 422 and errors json
 
 		// alternate
-		# return response(['message' => 'You did it!']); // optional custom response on success, default is just 'true'
+		# return static::response(['message' => 'You did it!']); // optional custom response on success, default is just 'true'
 	}
 }
 ```
