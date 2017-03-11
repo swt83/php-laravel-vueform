@@ -74,6 +74,17 @@ abstract class VueForm
     }
 
     /**
+     * Set the response message.
+     *
+     * @param	string	$message
+     * @return	void
+     */
+    public static function message($message)
+    {
+    	static::$message = $message;
+    }
+
+    /**
      * Validate the form.
      *
      * @return  boolean
