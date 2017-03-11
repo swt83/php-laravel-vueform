@@ -33,11 +33,20 @@ class MyForm extends VueForm
 			// do something
 		}
 
-		// return
-		return static::response(); // if form doesn't validate, this will autoreturn 422 and errors json
+		// return a response object
+		return static::response();
 
-		// alternate
-		# return static::response(['message' => 'You did it!']); // optional custom response on success, default is just 'true'
+		// This response will automatically show error code 422 and
+		// your validate errors.  A successful submission will
+		// return response code 200.
+
+		/*
+		// add optional message
+		static::message('Success!');
+
+		// or add a message to response method
+		return static::response('You did it!);
+		*/
 	}
 }
 ```

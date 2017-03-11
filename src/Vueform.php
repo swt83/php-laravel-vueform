@@ -21,9 +21,9 @@ abstract class VueForm
 	/**
      * Form errors.
      *
-     * @var	$error	object
+     * @var	$error	array
      */
-	public static $errors = null;
+	public static $errors = [];
 
 	/**
      * Response code.
@@ -31,6 +31,13 @@ abstract class VueForm
      * @var	$code	int
      */
 	public static $code = 200;
+
+	/**
+     * Custom error message.
+     *
+     * @var	$message	string
+     */
+	public static $message = null;
 
 	/**
      * Check if field value exists.
@@ -99,11 +106,18 @@ abstract class VueForm
 	/**
      * Return response object.
      *
-     * @param	array 	$payload
+     * @param	string	$message
      * @return  boolean
      */
-	public static function response($payload = true)
+	public static function response($message = null)
 	{
-		return response(json_encode(static::$errors ? static::$errors : $payload), static::$code);
+		if ($message) static::$message = $message;
+
+		$payload = json_encode([
+			'errors' => static::$errors,
+			'message' => static::$message,
+		]);
+
+		return response($payload, static::$code);
 	}
 }
