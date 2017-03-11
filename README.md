@@ -74,7 +74,8 @@ const app = new Vue({
     		'last': null,
     		'email': null,
     	},
-    	'errors': new errors()
+    	'errors': new errors(),
+    	'errorMessage': null,
     },
     methods: {
     	onFormSubmit: function() {
@@ -82,10 +83,12 @@ const app = new Vue({
     		axios.post('submit', this.input)
     			.then(function(response) {
     				app.step = 3;
+    				app.errorMessage = response.data.message;
     			})
     			.catch(function(error) {
     				app.step = 2;
-    				app.errors.record(error.response.data);
+    				app.errorMessage = error.response.data.message;
+    				app.errors.record(error.response.data.errors);
     			});
     	},
     	onFormClear: function() {
@@ -103,12 +106,8 @@ Setup your HTML form:
 
 ```html
 <form method="POST" action="#" v-on:submit.prevent="onFormSubmit()">
-	<div v-if="step == 2">
-		Please fix the errors below:
-	</div>
-	<div v-else-if="step == 3">
-		Success!
-	</div>
+	<div v-if="step == 2" v-text="errorMessage"></div>
+	<div v-else-if="step == 3" v-text="errorMessage"></div>
 	<label class="label is-hidden">First</label>
 	<p class="control">
 		<input name="first" type="text" v-bind:class="errors.get('first') ? 'input is-medium is-danger' : 'input is-medium'" placeholder="First" v-model='input.first' v-on:keydown="errors.clear('first')">
