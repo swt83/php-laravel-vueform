@@ -87,8 +87,15 @@ const app = new Vue({
     			})
     			.catch(function(error) {
     				app.step = 2;
-    				app.errorMessage = error.response.data.message;
-    				app.errors.record(error.response.data.errors);
+    				if (error.response.data.errors)
+                    {
+                        that.errorMessage = error.response.data.message;
+                        that.errors.record(error.response.data.errors);
+                    }
+                    else
+                    {
+                        that.errorMessage = 'Sorry, something went wrong with the server!';
+                    }
     			});
     	},
     	onFormClear: function() {
