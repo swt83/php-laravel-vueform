@@ -74,6 +74,18 @@ abstract class VueForm
     }
 
     /**
+     * Set the response message and error code at one time.
+     *
+     * @param   string  $message
+     * @return  void
+     */
+    public static function errorMessage($message)
+    {
+        static::message($message);
+        static::code(422);
+    }
+
+    /**
      * Set the response message.
      *
      * @param	string	$message
@@ -82,6 +94,17 @@ abstract class VueForm
     public static function message($message)
     {
     	static::$message = $message;
+    }
+
+    /**
+     * Set the response code.
+     *
+     * @param   string  $message
+     * @return  void
+     */
+    public static function code($code)
+    {
+        static::$code = $code;
     }
 
     /**
