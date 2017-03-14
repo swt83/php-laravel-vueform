@@ -79,10 +79,23 @@ abstract class VueForm
      * @param   string  $message
      * @return  void
      */
-    public static function errorMessage($message)
+    public static function setErrorMessage($message)
     {
         static::message($message);
         static::code(422);
+    }
+
+    /**
+     * Set the response message and error code and return the response.
+     *
+     * @param   string  $message
+     * @return  void
+     */
+    public static function returnErrorMessage($message)
+    {
+        static::setErrorMessage($message);
+
+        return static::response();
     }
 
     /**
@@ -91,9 +104,22 @@ abstract class VueForm
      * @param	string	$message
      * @return	void
      */
-    public static function message($message)
+    public static function setMessage($message)
     {
     	static::$message = $message;
+    }
+
+    /**
+     * Set the response message.
+     *
+     * @param   string  $message
+     * @return  void
+     */
+    public static function returnMessage($message)
+    {
+        static::setMessage($message);
+
+        return static::response();
     }
 
     /**
@@ -102,7 +128,7 @@ abstract class VueForm
      * @param   string  $message
      * @return  void
      */
-    public static function code($code)
+    public static function setCode($code)
     {
         static::$code = $code;
     }
@@ -112,7 +138,7 @@ abstract class VueForm
      *
      * @return  boolean
      */
-	public static function is_valid()
+	public static function isValid()
 	{
 		// capture
 		static::$input = \Request::input();

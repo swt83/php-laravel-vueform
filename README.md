@@ -23,7 +23,7 @@ class MyForm extends VueForm
 
 	public static function run()
 	{
-		if (static::is_valid())
+		if (static::isValid())
 		{
 			// capture
 			$first = static::get('first');
@@ -42,10 +42,19 @@ class MyForm extends VueForm
 
 		/*
 		// add optional message
-		static::message('Success!');
+		static::setMessage('Success!');
 
 		// or add a message to response method
 		return static::response('You did it!);
+
+		// or add message and return
+		return static::returnMessage('Yay!');
+
+		// or add message as error
+		static::setErrorMessage('Oops');
+
+		// or add error message and return
+		return static::returnErrorMessage('You messed up, dude.');
 		*/
 	}
 }
