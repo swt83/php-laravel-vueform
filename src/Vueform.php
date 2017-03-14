@@ -81,7 +81,7 @@ abstract class VueForm
      */
     public static function error($message)
     {
-        static::setMessage($message);
+        static::message($message);
         static::code(422);
     }
 
@@ -147,8 +147,8 @@ abstract class VueForm
      */
 	public static function response($message = null, $code = null, $extra = null)
 	{
-		if ($message) static::setMessage($message);
-        if ($code) static::setCode($code);
+		if ($message) static::message($message);
+        if ($code) static::code($code);
 
 		$payload = json_encode([
 			'errors' => static::$errors,
