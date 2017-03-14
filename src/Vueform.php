@@ -79,23 +79,10 @@ abstract class VueForm
      * @param   string  $message
      * @return  void
      */
-    public static function setErrorMessage($message)
+    public static function error($message)
     {
-        static::message($message);
+        static::setMessage($message);
         static::code(422);
-    }
-
-    /**
-     * Set the response message and error code and return the response.
-     *
-     * @param   string  $message
-     * @return  void
-     */
-    public static function returnErrorMessage($message)
-    {
-        static::setErrorMessage($message);
-
-        return static::response();
     }
 
     /**
@@ -104,22 +91,9 @@ abstract class VueForm
      * @param	string	$message
      * @return	void
      */
-    public static function setMessage($message)
+    public static function message($message)
     {
     	static::$message = $message;
-    }
-
-    /**
-     * Set the response message.
-     *
-     * @param   string  $message
-     * @return  void
-     */
-    public static function returnMessage($message)
-    {
-        static::setMessage($message);
-
-        return static::response();
     }
 
     /**
@@ -128,7 +102,7 @@ abstract class VueForm
      * @param   string  $message
      * @return  void
      */
-    public static function setCode($code)
+    public static function code($code)
     {
         static::$code = $code;
     }
@@ -138,7 +112,7 @@ abstract class VueForm
      *
      * @return  boolean
      */
-	public static function isValid()
+	public static function validate()
 	{
 		// capture
 		static::$input = \Request::input();
@@ -167,15 +141,19 @@ abstract class VueForm
      * Return response object.
      *
      * @param	string	$message
+     * @param   int     $code
+     * @param   mixed   $extra
      * @return  boolean
      */
-	public static function response($message = null)
+	public static function response($message = null, $code = null, $extra = null)
 	{
-		if ($message) static::$message = $message;
+		if ($message) static::setMessage($message);
+        if ($code) static::setCode($code);
 
 		$payload = json_encode([
 			'errors' => static::$errors,
 			'message' => static::$message,
+            'data' => $extra,
 		]);
 
 		return response($payload, static::$code);
