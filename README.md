@@ -8,17 +8,30 @@ Normal install via Composer.
 
 ## Usage
 
+Make a route:
+
+```php
+Route::get('login', function()
+{
+    return view('login');
+});
+
+Route::post('login', function()
+{
+    return LoginForm::run();
+});
+```
+
 Make a form model:
 
 ```php
 use Travis\Vueform;
 
-class MyForm extends VueForm
+class LoginForm extends VueForm
 {
 	public static $rules = [
-		'first' => 'required',
-		'last' => 'required',
 		'email' => 'required|email',
+        'password' => 'required',
 	];
 
 	public static function run()
@@ -26,9 +39,8 @@ class MyForm extends VueForm
 		if (static::validate())
 		{
 			// capture
-			$first = static::get('first');
-			$last = static::get('last');
 			$email = static::get('email');
+            $last = static::get('password');
 
 			// do something
 		}
@@ -56,92 +68,38 @@ class MyForm extends VueForm
 }
 ```
 
-Make a route or a controller:
-
-```php
-Route::post('submit', function()
-{
-	return MyForm::run();
-});
-```
-
-In your ``resources/assets/js/app.js`` file, setup your Vue instance (with the helper ``errors`` class):
+In your ``resources/assets/js/app.js`` file:
 
 ```
 require('../../../vendor/travis/vueform/public/js/vueform.js');
 
-const app = new Vue({
-    el: '#app',
+const login = new Vue({
+    el: '#login',
     data: {
-    	'step': 1,
-    	'input': {
-    		'first': null,
-    		'last': null,
-    		'email': null,
-    	},
-    	'errors': new errors(),
-    	'errorMessage': null,
+    	'url': 'login', // the route that will process the form submission
+        'step': 1,
+        'input': [],
+        'errors': new vueFormErrors,
+        'error_message': null,
+        'is_waiting': false,
     },
-    methods: {
-    	onFormSubmit: function() {
-    		var app = this;
-    		axios.post('submit', this.input)
-    			.then(function(response) {
-    				app.step = 3;
-    				app.errorMessage = response.data.message;
-    			})
-    			.catch(function(error) {
-    				app.step = 2;
-    				if (error.response.data.errors)
-                    {
-                        that.errorMessage = error.response.data.message;
-                        that.errors.record(error.response.data.errors);
-                    }
-                    else
-                    {
-                        that.errorMessage = 'Sorry, something went wrong with the server!';
-                    }
-    			});
-    	},
-    	onFormClear: function() {
-    		this.step = 1;
-    		this.errors.clearAll();
-    		for (field in this.input) {
-    			this.input[field] = null;
-    		}
-    	}
-    }
+    methods: vueFormMethods
 });
 ```
 
-Setup your HTML form:
+Make a view:
 
 ```html
-<form method="POST" action="#" v-on:submit.prevent="onFormSubmit()">
-	<div v-if="step == 2" v-text="errorMessage"></div>
-	<div v-else-if="step == 3" v-text="errorMessage"></div>
-	<label class="label is-hidden">First</label>
-	<p class="control">
-		<input name="first" type="text" v-bind:class="errors.get('first') ? 'input is-medium is-danger' : 'input is-medium'" placeholder="First" v-model='input.first' v-on:keydown="errors.clear('first')">
-		<span class="help is-danger" v-if="errors.has('first')" v-text="errors.get('first')"></span>
-	</p>
-	<label class="label is-hidden">Last</label>
-	<p class="control">
-		<input name="last" type="text" v-bind:class="errors.get('last') ? 'input is-medium is-danger' : 'input is-medium'" placeholder="Last" v-model='input.last' v-on:keydown="errors.clear('last')">
-		<span class="help is-danger" v-if="errors.has('last')" v-text="errors.get('last')"></span>
-	</p>
-    <label class="label is-hidden">Email</label>
-	<p class="control">
-		<input type="text" v-bind:class="errors.get('email') ? 'input is-medium is-danger' : 'input is-medium'" placeholder="Email" v-model='input.email' v-on:keydown="errors.clear('email')">
-		<span class="help is-danger" v-if="errors.has('email')" v-text="errors.get('email')"></span>
-	</p>
-	<div class="control is-grouped">
-		<p class="control">
-			<button class="button is-primary is-medium" v-bind:disabled="errors.any()">Submit</button>
-		</p>
-		<p class="control">
-			<a class="button is-link is-medium" v-on:click="onFormClear()">Cancel</a>
-		</p>
-	</div>
+<form method="POST" action="#" v-on:submit.prevent="onFormSubmit()" id="login">
+    {{ csrf_field() }}
+    <div v-if="step == 2" v-text="error_message"></div>
+    <div v-else-if="step == 3" v-text="error_message"></div>
+    <label>Email</label>
+    <input type="text" v-bind:class="errors.get('email') ? '' : ''" placeholder="Email" v-model='input.email' v-on:keydown="errors.clear('email')">
+    <div class="error" v-if="errors.has('email')" v-text="errors.get('email')"></div>
+    <label>Password</label>
+    <input type="password" v-bind:class="errors.get('password') ? '' : ''" placeholder="Password" v-model='input.password' v-on:keydown="errors.clear('password')">
+    <div class="error" v-if="errors.has('password')" v-text="errors.get('password')"></div>
+    <button v-on:click="onFormSubmit()" v-bind:class="is_waiting ? '' : ''" v-bind:disabled="errors.any()" v-text="is_waiting ? 'Loading' : 'Submit'"></button>
 </form>
 ```
