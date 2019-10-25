@@ -78,7 +78,7 @@ const login = new Vue({
     data: {
     	'url': 'login', // the route that will process the form submission
         'step': 1,
-        'input': [],
+        'input': {},
         'errors': new vueFormErrors,
         'error_message': null,
         'is_waiting': false,
