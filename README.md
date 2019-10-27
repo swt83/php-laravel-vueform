@@ -8,7 +8,7 @@ Normal install via Composer.
 
 ## Usage
 
-Make a route:
+Make a form route:
 
 ```php
 Route::get('login', function()
@@ -25,7 +25,7 @@ Route::post('login', function()
 Make a form model:
 
 ```php
-use Travis\Vueform;
+use Travis\VueForm;
 
 class LoginForm extends VueForm
 {
@@ -68,38 +68,39 @@ class LoginForm extends VueForm
 }
 ```
 
-In your ``resources/assets/js/app.js`` file:
+Make a form component:
 
 ```
-require('../../../vendor/travis/vueform/public/js/vueform.js');
+<template>
+    <form method="POST" action="#" v-on:submit.prevent="">
+        <div v-if="step == 2" v-text="error_message"></div>
+        <div v-else-if="step == 3" v-text="error_message"></div>
+        <label>Email</label>
+        <input type="text" v-bind:class="errors.get('email') ? '' : ''" placeholder="Email" v-model='input.email' v-on:keydown="errors.clear('email')">
+        <div class="error" v-if="errors.has('email')" v-text="errors.get('email')"></div>
+        <label>Password</label>
+        <input type="password" v-bind:class="errors.get('password') ? '' : ''" placeholder="Password" v-model='input.password' v-on:keydown="errors.clear('password')">
+        <div class="error" v-if="errors.has('password')" v-text="errors.get('password')"></div>
+        <button v-on:click="onFormSubmit()" v-bind:class="is_waiting ? '' : ''" v-bind:disabled="errors.any()" v-text="is_waiting ? 'Loading' : 'Submit'"></button>
+        or <a v-on:click="app.show_login == false">Cancel</a>
+    </form>
+</template>
 
-const login = new Vue({
-    el: '#login',
-    data: {
-    	'url': 'login', // the route that will process the form submission
-        'step': 1,
-        'input': {},
-        'errors': new vueFormErrors,
-        'error_message': null,
-        'is_waiting': false,
-    },
-    methods: vueFormMethods
-});
+<script>
+    import vueForm from '../../../../../../vendor/travis/vueform/public/js/mixin.js'
+    export default {
+        mixins: [vueForm],
+        data: function() {
+            return {
+                url: 'login',
+            }
+        }
+    }
+</script>
 ```
 
-Make a view:
+Make a form view:
 
 ```html
-<form method="POST" action="#" v-on:submit.prevent="onFormSubmit()" id="login">
-    {{ csrf_field() }}
-    <div v-if="step == 2" v-text="error_message"></div>
-    <div v-else-if="step == 3" v-text="error_message"></div>
-    <label>Email</label>
-    <input type="text" v-bind:class="errors.get('email') ? '' : ''" placeholder="Email" v-model='input.email' v-on:keydown="errors.clear('email')">
-    <div class="error" v-if="errors.has('email')" v-text="errors.get('email')"></div>
-    <label>Password</label>
-    <input type="password" v-bind:class="errors.get('password') ? '' : ''" placeholder="Password" v-model='input.password' v-on:keydown="errors.clear('password')">
-    <div class="error" v-if="errors.has('password')" v-text="errors.get('password')"></div>
-    <button v-on:click="onFormSubmit()" v-bind:class="is_waiting ? '' : ''" v-bind:disabled="errors.any()" v-text="is_waiting ? 'Loading' : 'Submit'"></button>
-</form>
+<login></login>
 ```
