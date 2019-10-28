@@ -1,4 +1,4 @@
-# Vueform
+# VueForm
 
 A Laravel PHP package for working w/ Vue and form submissions.
 
@@ -29,42 +29,42 @@ use Travis\VueForm;
 
 class LoginForm extends VueForm
 {
-	public static $rules = [
-		'email' => 'required|email',
+    public static $rules = [
+        'email' => 'required|email',
         'password' => 'required',
-	];
+    ];
 
-	public static function run()
-	{
-		if (static::validate())
-		{
-			// capture
-			$email = static::get('email');
+    public static function run()
+    {
+            if (static::validate())
+            {
+            // capture
+            $email = static::get('email');
             $last = static::get('password');
 
-			// do something
-		}
+            // do something
+            }
 
-		// return a response object
-		return static::response();
+            // return a response object
+            return static::response();
 
-		// This response will automatically show error code 422 and
-		// your validate errors.  A successful submission will
-		// return response code 200.
+            // This response will automatically show error code 422 and
+            // your validate errors.  A successful submission will
+            // return response code 200.
 
-		/*
-		// add optional message and return
-		static::message('Success!');
-		return static::response();
+            /*
+            // add optional message and return
+            static::message('Success!');
+            return static::response();
 
-		// or add message as error and return
-		static::error('Oops');
-		return static::response();
+            // or add message as error and return
+            static::error('Oops');
+            return static::response();
 
-		// or add it all to response method
-		return static::response('You did it!', 200, ['extra' => 'Stuff you need to know.']);
-		*/
-	}
+            // or add it all to response method
+            return static::response('You did it!', 200, ['extra' => 'Stuff you need to know.']);
+            */
+    }
 }
 ```
 

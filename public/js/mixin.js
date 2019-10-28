@@ -52,9 +52,7 @@ export default {
         onFormClear: function() {
             this.step = 1;
             this.errors.clearAll();
-            for (field in this.input) {
-                this.input[field] = null;
-            }
+            this.input={};
         }
     }
 }
