@@ -8,8 +8,10 @@ export default {
             'url': null,
             'step': 1,
             'input': {},
+            'response': {},
             'errors': new vueFormErrors,
             'error_message': null,
+            'error_message_type': null,
             'is_waiting': false,
         }
     },
@@ -33,6 +35,8 @@ export default {
                 .then(function(response) {
                     that.step = 3;
                     that.error_message = response.data.message;
+                    that.error_message_type = response.data.message_type;
+                    that.response = response.data.data;
                     that.is_waiting = false;
                 })
                 .catch(function(error) {
@@ -40,10 +44,13 @@ export default {
                     {
                         that.errors.record(error.response.data.errors);
                         that.error_message = error.response.data.message;
+                        that.error_message_type = error.response.data.message_type;
+                        that.response = error.response.data.data;
                     }
                     else
                     {
                         that.error_message = 'Sorry, something went wrong with the server!';
+                        that.error_message_type = 'error';
                     }
                     that.step = 2;
                     that.is_waiting = false;

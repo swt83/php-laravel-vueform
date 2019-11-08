@@ -4,42 +4,49 @@ namespace Travis;
 
 abstract class VueForm
 {
-	/**
+    /**
      * Form rules.
      *
-     * @var	$rules	array
+     * @var $rules  array
      */
-	public static $rules = [];
+    public static $rules = [];
 
-	/**
+    /**
      * Form input.
      *
-     * @var	$input	array
+     * @var $input  array
      */
-	public static $input = [];
+    public static $input = [];
 
-	/**
+    /**
      * Form errors.
      *
-     * @var	$error	array
+     * @var $error  array
      */
-	public static $errors = [];
+    public static $errors = [];
 
-	/**
+    /**
      * Response code.
      *
-     * @var	$code	int
+     * @var $code   int
      */
-	public static $code = 200;
+    public static $code = 200;
 
-	/**
-     * Custom error message.
+    /**
+     * Custom response message.
      *
-     * @var	$message	string
+     * @var $message    string
      */
-	public static $message = null;
+    public static $message = null;
 
-	/**
+    /**
+     * Custom response message type.
+     *
+     * @var $message    string
+     */
+    public static $message_type = null;
+
+    /**
      * Check if field value exists.
      *
      * @param   string  $field
@@ -51,7 +58,7 @@ abstract class VueForm
         return ex(static::$input, $field) ? true : false;
     }
 
-	/**
+    /**
      * Get field value from stored value.
      *
      * @param   string  $field
@@ -81,28 +88,33 @@ abstract class VueForm
      */
     public static function error($message)
     {
-        static::message($message);
+        static::message($message, 'error');
         static::code(422);
     }
 
     /**
      * Set the response message.
      *
-     * @param	string	$message
-     * @return	void
+     * @param   string  $message
+     * @param   string  $message_type
+     * @return  void
      */
-    public static function message($message)
+    public static function message($message, $message_type = null)
     {
-    	static::$message = $message;
+        static::$message = $message;
+        if ($message_type)
+        {
+            static::$message_type = $message_type;
+        }
     }
 
     /**
      * Set the response code.
      *
-     * @param   string  $message
+     * @param   integer  $code
      * @return  void
      */
-    public static function code($code)
+    public static function code(Int $code)
     {
         static::$code = $code;
     }
@@ -112,50 +124,52 @@ abstract class VueForm
      *
      * @return  boolean
      */
-	public static function validate()
-	{
-		// capture
-		static::$input = \Request::input();
+    public static function validate()
+    {
+        // capture
+        static::$input = \Request::input();
 
-		// validate
-		$validate = \Validator::make(static::$input, static::$rules);
+        // validate
+        $validate = \Validator::make(static::$input, static::$rules);
 
-	    // if fails...
-	    if (!$validate->passes())
-	    {
-	    	// save errors
-	    	static::$errors = $validate->errors();
+        // if fails...
+        if (!$validate->passes())
+        {
+            // save errors
+            static::$errors = $validate->errors();
 
-	    	// save code
-	    	static::$code = 422;
+            // save code
+            static::$code = 422;
 
-	    	// return
-	    	return false;
-	    }
+            // return
+            return false;
+        }
 
-	    // return
-		return true;
-	}
+        // return
+        return true;
+    }
 
-	/**
+    /**
      * Return response object.
      *
-     * @param	string	$message
+     * @param   string  $message
+     * @param   string  $message_type
      * @param   int     $code
-     * @param   mixed   $extra
+     * @param   mixed   $data
      * @return  boolean
      */
-	public static function response($message = null, $code = null, $extra = null)
-	{
-		if ($message) static::message($message);
+    public static function response($message = null, $message_type = null, $code = null, $data = [])
+    {
+        if ($message) static::message($message, $message_type);
         if ($code) static::code($code);
 
-		$payload = json_encode([
-			'errors' => static::$errors,
-			'message' => static::$message,
-            'data' => $extra,
-		]);
+        $payload = json_encode([
+            'errors' => static::$errors,
+            'message' => static::$message,
+            'message_type' => static::$message_type,
+            'data' => $data,
+        ]);
 
-		return response($payload, static::$code);
-	}
+        return response($payload, static::$code);
+    }
 }
